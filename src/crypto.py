@@ -8,6 +8,11 @@ from cryptography.fernet import Fernet
 
 
 def generate_key(key_path: str) -> None:
+    """Generate a Fernet encryption key and write it to disk.
+
+    Args:
+        key_path: Destination path for the key file.
+    """
     key = Fernet.generate_key()
     with open(key_path, "wb") as f:
         f.write(key)
@@ -15,17 +20,43 @@ def generate_key(key_path: str) -> None:
 
 
 def load_key(key_path: str) -> bytes:
+    """Read a Fernet key from disk.
+
+    Args:
+        key_path: Path to the key file.
+
+    Returns:
+        The raw key bytes.
+    """
     with open(key_path, "rb") as f:
         return f.read()
 
 
 def encrypt_passwords(passwords: list[str], key: bytes) -> str:
+    """Encrypt a list of passwords with Fernet.
+
+    Args:
+        passwords: Plain-text passwords to encrypt.
+        key: Fernet key bytes.
+
+    Returns:
+        JSON string containing the list of encrypted tokens.
+    """
     f = Fernet(key)
     encrypted = [f.encrypt(p.encode()).decode() for p in passwords]
     return json.dumps({"passwords": encrypted})
 
 
 def decrypt_passwords(encrypted_json: str, key: bytes) -> list[str]:
+    """Decrypt a JSON string of Fernet-encrypted passwords.
+
+    Args:
+        encrypted_json: JSON string as produced by ``encrypt_passwords``.
+        key: Fernet key bytes.
+
+    Returns:
+        List of decrypted plain-text passwords.
+    """
     f = Fernet(key)
     data = json.loads(encrypted_json)
     return [f.decrypt(e.encode()).decode() for e in data["passwords"]]
@@ -34,6 +65,16 @@ def decrypt_passwords(encrypted_json: str, key: bytes) -> list[str]:
 def write_encrypted_file(
     passwords: list[str], key_path: str, output_path: str
 ) -> None:
+    """Encrypt passwords and write them to a file.
+
+    High-level helper that loads the key, encrypts, and writes the JSON
+    output.  Creates parent directories if needed.
+
+    Args:
+        passwords: Plain-text passwords to encrypt.
+        key_path: Path to the Fernet key file.
+        output_path: Destination for the encrypted JSON file.
+    """
     key = load_key(key_path)
     encrypted = encrypt_passwords(passwords, key)
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
@@ -43,6 +84,15 @@ def write_encrypted_file(
 
 
 def read_encrypted_file(key_path: str, file_path: str) -> list[str]:
+    """Read and decrypt the encrypted passwords file.
+
+    Args:
+        key_path: Path to the Fernet key file.
+        file_path: Path to the encrypted JSON file.
+
+    Returns:
+        List of decrypted plain-text passwords.
+    """
     key = load_key(key_path)
     with open(file_path, "r") as f:
         encrypted = f.read()

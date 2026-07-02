@@ -58,6 +58,13 @@ python src/crypto.py --init        # generates config/secret.key
 python src/crypto.py --set         # interactive: enter passwords → config/passwords.enc
 ```
 
+## Code Style
+
+- All public functions **must** have a Google-style docstring (Args / Returns / Raises).
+- Use type hints on all function parameters and return values.
+- Never add inline comments to explain *what* the code does — use docstrings for interface docs.
+- Keep functions single-responsibility; one clear purpose per function.
+
 ## Running
 
 ```bash
