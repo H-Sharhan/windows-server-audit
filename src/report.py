@@ -267,14 +267,24 @@ def write_password_status(ws, data: list[dict]) -> None:
 
     Args:
         ws: An openpyxl ``Worksheet`` instance.
-        data: List of dicts with keys ``server``, ``success``, ``error``.
+        data: List of dicts with keys ``server``, ``old_connection_status``,
+            ``new_password_set``, ``error``.
     """
-    headers = ["Server", "Success", "Error"]
+    headers = ["Server", "Old Connection Status", "New Password Set", "Error"]
     _add_header_style(ws, headers)
     for row_idx, entry in enumerate(data, start=2):
         ws.cell(row=row_idx, column=1, value=entry.get("server", ""))
-        ws.cell(row=row_idx, column=2, value=entry.get("success", False))
-        ws.cell(row=row_idx, column=3, value=entry.get("error", ""))
+        ws.cell(
+            row=row_idx,
+            column=2,
+            value=entry.get("old_connection_status", ""),
+        )
+        ws.cell(
+            row=row_idx,
+            column=3,
+            value=entry.get("new_password_set", False),
+        )
+        ws.cell(row=row_idx, column=4, value=entry.get("error", ""))
     _auto_width(ws)
 
 
