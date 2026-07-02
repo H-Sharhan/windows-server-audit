@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+config/secret.key
+config/passwords.enc
+output/
