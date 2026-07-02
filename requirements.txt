@@ -1,5 +1,5 @@
-pywinrm>=0.4.3
-pywinrm[credssp]>=0.4.3
-openpyxl>=3.1.2
-cryptography>=41.0.0
+pywinrm>=0.5.0
+pywinrm[credssp]>=0.5.0
+openpyxl>=3.1.5
+cryptography>=49.0.0
 requests-credssp>=2.0.0
