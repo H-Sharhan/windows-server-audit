@@ -31,14 +31,11 @@ windows-server-audit/
 │   ├── plan.md
 │   └── step-*.md
 ├── src/
-│   ├── crypto.py
-│   ├── server_connection.py
-│   ├── audit_users.py
-│   ├── audit_groups.py
-│   ├── audit_tasks.py
-│   ├── report.py
-│   ├── audit.py              # main entry point (read-only)
-│   └── change_password.py    # password change entry point
+│   ├── crypto.py              # Fernet encrypt/decrypt (standalone + imported)
+│   ├── audit.py               # Read-only audit: connection, users, groups,
+│   │                          # tasks, Excel report, orchestrator
+│   └── change_password.py     # Password change: connection, Excel report,
+│                              # change logic
 ├── config/
 │   ├── servers.txt
 │   └── passwords.enc
@@ -54,5 +51,5 @@ windows-server-audit/
 - **pywinrm[credssp]** — required for double-hop scenarios and HTTP WinRM.
 - **openpyxl** — Excel generation with formatting, filters, auto-width.
 - **cryptography.fernet** — symmetric encryption for password file.
-- Each module is single-responsibility and testable in isolation.
+- Each script is self-contained (only `crypto.py` is shared between the two entry points).
 - Error collection per-server, per-operation — never abort entire run on one failure.
